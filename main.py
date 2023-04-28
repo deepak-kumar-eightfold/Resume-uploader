@@ -7,6 +7,7 @@ import os
 import csv
 import random
 import time
+import re
 
 from locators import Locators
 from utils import JsonParser
@@ -175,12 +176,48 @@ def upload_and_delete_resume(data: dict) -> dict:
     return logs_with_status
 
 
+def validate_config_data(data: dict) -> None:
+    pcs_url_pattern = r"https:\/\/[a-zA-Z0-9_-]+\.eightfold\.ai\/careers"
+
+    assert re.match(
+        pcs_url_pattern,
+        data["pcs_url"]
+    ), "Website url doesn't match the pattern."
+
+    assert data["first_names_file_name"].endswith(
+        ".csv"), "First name file is not of csv format."
+
+    assert data["last_names_file_name"].endswith(
+        ".csv"), "Last name file is not of csv format."
+
+    for position in data["positions"]:
+        email_pattern = r"^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$"
+        assert re.match(
+            email_pattern,
+            position["email"]
+        ), "Email format not correct/supported."
+
+        assert type(
+            position["number_of_resumes_to_be_uploaded"]
+        ) == int, "Provide integer value for the number of resumes"
+        assert position["number_of_resumes_to_be_uploaded"] >= 0, "Provide a non-negative value for the number of resumes"
+
+        assert os.path.isdir(
+            position["resume_directory"]
+        ), "Provided directory is not valid."
+
+        assert type(
+            position["position_name"]
+        ) == str, "Position name should be in string format."
+
+
 def main() -> None:
     json_parser = JsonParser()
 
     config = json_parser.read_json_from_file(
         input_file_path="./config.json"
     )
+    validate_config_data(config)
 
     first_names = read_csv(config["first_names_file_name"])
     last_names = read_csv(config["last_names_file_name"])
