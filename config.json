@@ -1,0 +1,19 @@
+{
+    "pcs_url": "https://eightfoldqa.eightfold.ai/careers",
+    "first_names_file_name": "firstNames.csv",
+    "last_names_file_name": "lastNames.csv",
+    "positions": [
+        {
+            "position_name": "",
+            "resume_directory": "",
+            "number_of_resumes_to_be_uploaded": 0,
+            "email": ""
+        },
+        {
+            "position_name": "",
+            "resume_directory": "",
+            "number_of_resumes_to_be_uploaded": 0,
+            "email": ""
+        }
+    ]
+}
